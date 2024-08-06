@@ -1,0 +1,21 @@
+{
+    "placeholder": "The name of the settlement, country or region",
+    "info": "Weather forecasts, nowcasts and history in a fast and elegant way",
+    "metric": "Metric",
+    "imperial": "Imperial",
+    "feels_like": "Feels like",
+    "clouds": "clouds",
+    "overcast clouds":"Overcast clouds",
+    "humidity": "Humidity",
+    "visibility": "Visibility",
+    "sunrise": "Sunrise",
+    "sunset": "Sunset",
+    "hourly_forecast": "Hourly forecast",
+    "days_forecast": "5-day forecast",
+    "dew_point": "Dew point",
+    "scattered clouds": "Scattered clouds",
+    "clear sky": "Clear sky",
+    "clear": "Clear"
+
+
+}
