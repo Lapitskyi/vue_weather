@@ -1,5 +1,5 @@
 <template>
-  <div class="relative w-full h-screen flex flex-col items-center m-auto">
+  <div class="relative w-full h-screen flex flex-col m-auto">
     <div class="relative lg:container  px-2.5 ">
       <div class="absolute top-2 right-0 ">
         <LanguageSwitcher/>

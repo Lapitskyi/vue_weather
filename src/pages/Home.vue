@@ -6,7 +6,7 @@
           class="grid grid-cols-2 items-center justify-between gap-3 lg:container mx-auto px-2.5 w-full h-[300px]">
         <div>
           <h1 class="text-orange-400 text-7xl font-bold">Weather</h1>
-          <p class="text-md text-white max-w-[360px]">{{$t('info')}}</p>
+          <p class="text-md text-white max-w-[360px]">{{ $t('info') }}</p>
         </div>
         <div class="relative h-max">
           <div>
@@ -89,8 +89,10 @@
       </div>
     </section>
 
+
     <section class="my-5">
-      <div class="grid grid-cols-2 lg:container mx-auto px-2.5">
+      <Loader v-if="isLoaderCurrentCity"/>
+      <div v-if="!isLoaderCurrentCity" class="grid grid-cols-2 lg:container mx-auto px-2.5">
         <div v-if="state.currentCity">
           <Card
               @cardAction="addFavoritesCity"
@@ -108,15 +110,14 @@
     <section class="my-5">
       <div class="mt-5 grid grid-cols-2 gap-x-10 items-start  lg:container mx-auto px-2.5">
         <div>
-          <div>{{$t("hourly_forecast")}}</div>
-          <div>
-            <Chart/>
-          </div>
+
+          <Chart :chartData="hourlyForecastDay"/>
+
         </div>
 
-        <div >
-          <div class="text-center">{{$t("days_forecast")}}</div>
-          <div  class="flex justify-end">
+        <div>
+          <div class="text-center">{{ $t("days_forecast") }}</div>
+          <div class="flex justify-end">
             <List
                 :activeTemp="activeTemp"
                 :list="sortDays"
@@ -173,13 +174,17 @@ import Tab from "@/components/UI/Tab.vue";
 import Modal from "@/components/Modal/Modal.vue";
 import {useRouter} from "vue-router";
 import useLocalStorage from "@/helpers/useLocalStorage.js";
+import {isArray} from "chart.js/helpers";
+import Loader from "@/components/Loader/Loader.vue";
 
 export default {
   name: "Home",
   methods: {dateWeather, dayWeather, tempWeatherFar, tempWeatherCel},
-  components: {Modal, Tab, List, Chart, Card, CustomInput, CustomToggle},
+  components: {Loader, Modal, Tab, List, Chart, Card, CustomInput, CustomToggle},
   setup() {
     const router = useRouter()
+
+    let isLoaderCurrentCity = ref(false)
 
     let favoriteCities = useLocalStorage('favoriteCities', []);
     let citySearch = ref('');
@@ -209,11 +214,14 @@ export default {
       const fiveDays = await getForecastDays(lat, lon);
       if (fiveDays && Object.keys(fiveDays).length) {
         state.fiveDaysWeather.push(fiveDays)
+        hourlyForecast()
       }
     }
 
     const weatherCity = async (name) => {
       if (name) {
+        isLoaderCurrentCity.value = true
+
         const weather = await getWeatherCurrentCity(name)
 
         if (weather && Object.keys(weather).length) {
@@ -225,7 +233,9 @@ export default {
             state.listCountry = [];
             citySearch.value = '';
           }
+
         }
+        isLoaderCurrentCity.value = false
       }
     }
 
@@ -345,27 +355,68 @@ export default {
     const addFavoritesCity = () => {
       const result = favoriteCities.value?.find(item => item.id === state.currentCity.id)
 
-      if (!result && favoriteCities.value?.length <5) {
+      if (result) {
+        errorSearch.value = `The city has already been added to your favorites`
+        return
+      }
+
+      if (favoriteCities.value?.length > 4) {
+        errorSearch.value = `You can add up to 5 cities to your favorites.
+          In order to add a city, remove the ones you don't need city from the favorites`
+        return
+      }
+
+      if (!result && favoriteCities.value?.length < 5) {
         favoriteCities.value.push({
-          id:state.currentCity.id,
+          id: state.currentCity.id,
           name: state.currentCity.name,
           ...state.currentCity.coord
         })
       }
     }
 
-    const hourlyForecast = computed( ()=>{
-      const result =  state.fiveDaysWeather?.map((item)=> getTime(item.dt_txt))
-      return result
-
+    const hourlyForecastDay = reactive({
+      days: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+      chartData: {}
     })
-    console.log('state', state.fiveDaysWeather)
-    // console.log('state', getTime(state.fiveDaysWeather[0].dt))
-    console.log('state', hourlyForecast.value)
+
+
+    const hourlyForecast = () => {
+      let result = {
+        labels: [],
+        tempDay: [
+          {x: '09:00 AM', temp_max: ' 30', temp_min: '21'},
+          {x: '12:00 AM', temp_max: ' 32', temp_min: '19'},
+          {x: '06:00 PM', temp_max: ' 35', temp_min: '12'},
+          {x: '09:00 PM', temp_max: ' 40', temp_min: '12'},
+        ],
+        tempWeek: [
+          {x: 'Mon', temp_max: '21', temp_min: '11'},
+          {x: 'tue', temp_max: '31', temp_min: '13'},
+          {x: 'Wed', temp_max: '22', temp_min: '21'},
+          {x: 'Thu', temp_max: '11', temp_min: '14'},
+          {x: 'Fri', temp_max: '21', temp_min: '22'},
+          {x: 'Sat', temp_max: '25', temp_min: '11'},
+          {x: 'Sun', temp_max: '25', temp_min: '11'},
+        ]
+      }
+      hourlyForecastDay.chartData = result
+
+    }
+
+    watch(
+        () => state.fiveDaysWeather,
+        (prev, curr) => {
+
+          console.log('ew', prev, curr)
+          console.log('ewew', state.fiveDaysWeather)
+          hourlyForecast()
+        })
 
     onMounted(async () => {
       const findPositionUser = await getPosition();
       if (findPositionUser && Object.keys(findPositionUser).length) {
+
         await weatherCity(findPositionUser.location.city);
         await forestFiveDays(findPositionUser.location.latitude,
             findPositionUser.location.longitude)
@@ -389,7 +440,9 @@ export default {
       info,
       closeModal,
       openModalDelete,
-      addFavoritesCity
+      addFavoritesCity,
+      hourlyForecastDay,
+      isLoaderCurrentCity
     }
   },
 

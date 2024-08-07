@@ -15,7 +15,9 @@
     "dew_point": "Dew point",
     "scattered clouds": "Scattered clouds",
     "clear sky": "Clear sky",
-    "clear": "Clear"
-
+    "clear": "Clear",
+    "rain": "Rain",
+    "light rain": "Light rain",
+    "few clouds": "Few clouds"
 
 }

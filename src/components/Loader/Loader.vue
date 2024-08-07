@@ -8,7 +8,7 @@ export default {
 
 <template>
   <div class="w-full h-full">
-    <img src="/images/weather.gif" alt="">
+    <img src="/icons/weather2.gif" alt="">
   </div>
 
 </template>

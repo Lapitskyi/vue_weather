@@ -1,7 +1,7 @@
 <template>
+<div  class="bg-summer_banner bg-cover bg-center w-full h-screen">
+  <section class="flex gap-x-2.5  w-full pt-40 lg:container mx-auto px-2.5">
 
-  <section class="lg:container mx-auto px-2.5 flex flex-col">
-    <div class="flex gap-x-2.5  w-full pt-10">
       <Card
           v-for="item in cities" :id="item.id"
           :item="item"
@@ -10,8 +10,10 @@
           cardActionIcon="/icons/delete.svg"
           showFavoriteIcon="true"
       />
-    </div>
+
   </section>
+</div>
+
 
 </template>
 <script>

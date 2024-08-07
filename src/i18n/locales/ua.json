@@ -15,5 +15,8 @@
     "dew_point": "Точка роси",
     "scattered clouds": "Розсіяні хмари",
     "clear sky": "Чисте небо",
-    "clear": "Чисте небо"
+    "clear": "Чисте небо",
+    "rain": "Дощ",
+    "light rain": "Невеликий дощ",
+    "few clouds": "Небагато хмар"
 }
