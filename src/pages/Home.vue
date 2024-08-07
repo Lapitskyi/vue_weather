@@ -163,6 +163,7 @@ import {computed, onMounted, reactive, ref, watch} from "vue";
 import {getPosition} from "@/service/position.js";
 import Card from "@/components/Cards/Card.vue";
 import {
+  currentDay,
   dateWeather,
   dayWeather, getTime,
   tempWeatherCel,
@@ -174,7 +175,6 @@ import Tab from "@/components/UI/Tab.vue";
 import Modal from "@/components/Modal/Modal.vue";
 import {useRouter} from "vue-router";
 import useLocalStorage from "@/helpers/useLocalStorage.js";
-import {isArray} from "chart.js/helpers";
 import Loader from "@/components/Loader/Loader.vue";
 
 export default {
@@ -214,7 +214,6 @@ export default {
       const fiveDays = await getForecastDays(lat, lon);
       if (fiveDays && Object.keys(fiveDays).length) {
         state.fiveDaysWeather.push(fiveDays)
-        hourlyForecast()
       }
     }
 
@@ -335,11 +334,15 @@ export default {
         activeTemp.value = btn
       }
     }
+
+
     const sortDays = computed(() => {
       const res = [];
       const days = [];
+
       const findCity = state.fiveDaysWeather?.find(
           (item) => item.city.name.toLowerCase() === `${activeCity.value}`.toLowerCase())
+
       if (findCity !== undefined) {
         for (let i = 0; i < findCity.list.length; i++) {
           if (!days.includes(dayWeather(findCity.list[i].dt))) {
@@ -347,10 +350,12 @@ export default {
             res.push(findCity.list[i])
           }
         }
+        flag.value = true
       }
 
       return res
     })
+
 
     const addFavoritesCity = () => {
       const result = favoriteCities.value?.find(item => item.id === state.currentCity.id)
@@ -380,38 +385,64 @@ export default {
       chartData: {}
     })
 
+    const flag = ref(false)
+
 
     const hourlyForecast = () => {
-      let result = {
-        labels: [],
-        tempDay: [
-          {x: '09:00 AM', temp_max: ' 30', temp_min: '21'},
-          {x: '12:00 AM', temp_max: ' 32', temp_min: '19'},
-          {x: '06:00 PM', temp_max: ' 35', temp_min: '12'},
-          {x: '09:00 PM', temp_max: ' 40', temp_min: '12'},
-        ],
-        tempWeek: [
-          {x: 'Mon', temp_max: '21', temp_min: '11'},
-          {x: 'tue', temp_max: '31', temp_min: '13'},
-          {x: 'Wed', temp_max: '22', temp_min: '21'},
-          {x: 'Thu', temp_max: '11', temp_min: '14'},
-          {x: 'Fri', temp_max: '21', temp_min: '22'},
-          {x: 'Sat', temp_max: '25', temp_min: '11'},
-          {x: 'Sun', temp_max: '25', temp_min: '11'},
-        ]
-      }
-      hourlyForecastDay.chartData = result
+      const day = currentDay();
+      const weeks = []
 
+      const result = {
+        tempDay: [],
+        tempWeek: []
+      }
+
+      if (state.fiveDaysWeather?.length) {
+        const arr = state.fiveDaysWeather?.find(
+            (item) => item.city.name.toLowerCase() === `${activeCity.value}`.toLowerCase()).list
+
+        if (arr) {
+          for (let i = 0; i < arr.length; i++) {
+            const max = activeTemp.value === 'metric' ? tempWeatherCel(
+                arr[i].main.temp_max) : tempWeatherFar(arr[i].main.temp_max)
+            const min = activeTemp.value === 'metric' ? tempWeatherCel(
+                arr[i].main.temp_min) : tempWeatherFar(arr[i].main.temp_min)
+            if (!weeks.includes(dayWeather(arr[i].dt) || getTime(arr[i].dt))) {
+
+              if (dayWeather(arr[i].dt) === day) {
+                weeks.push(getTime(arr[i].dt))
+                const tempDay = {
+                  x: getTime(arr[i].dt),
+                  temp_max: max,
+                  temp_min: min - 1
+                }
+                result.tempDay.push(tempDay)
+              }
+              if (dayWeather(arr[i].dt) !== day) {
+                weeks.push(dayWeather(arr[i].dt))
+                const dayWeek = {
+                  x: dayWeather(arr[i].dt),
+                  temp_max: max,
+                  temp_min: min - 1
+                }
+                result.tempWeek.push(dayWeek)
+              }
+            }
+
+          }
+
+          hourlyForecastDay.chartData = result
+          flag.value = false
+        }
+      }
     }
 
     watch(
-        () => state.fiveDaysWeather,
+        flag,
         (prev, curr) => {
-
-          console.log('ew', prev, curr)
-          console.log('ewew', state.fiveDaysWeather)
           hourlyForecast()
-        })
+
+        }, {deep: true})
 
     onMounted(async () => {
       const findPositionUser = await getPosition();

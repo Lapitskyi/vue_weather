@@ -22,5 +22,12 @@ export const getTime = (time) => {
 export const currentTime = () => {
   return new Date().toLocaleTimeString('en-US', {hour: "2-digit", minute: "2-digit"});
 }
+export const currentDay = () => {
+  const weekdays = ['Sun','Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+
+  return weekdays[(new Date()).getDay()];
+}
+
+
 
 

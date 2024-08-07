@@ -36,9 +36,9 @@ import {onMounted, ref, toRef, watch} from "vue";
 export default {
   name: "Chart",
   props: {
-    chartData: {
-      days: Array,
-      data: Object
+    chartData:{
+      tempDay: [],
+      tempWeek: []
     },
     labels: []
   },
@@ -134,6 +134,7 @@ export default {
     })
 
     onMounted(() => {
+
       createChart()
     })
 
