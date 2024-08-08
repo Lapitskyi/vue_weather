@@ -11,6 +11,7 @@ export default {
         'summer_banner': "url('/images/summer_banner.jpg')",
       },
       screens: {
+        '991':'991px',
         'lg':'1200px',
         'xl':'1200px',
         '2xl':'1200px'

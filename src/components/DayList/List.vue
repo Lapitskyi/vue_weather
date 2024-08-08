@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col gap-3 p-2 w-max max-h-[380px] overflow-auto customScrollbar">
+  <div class="flex flex-col gap-3 p-2 w-full md:w-max max-h-[380px] overflow-auto customScrollbar">
     <ListItem
         :activeTemp="activeTemp"
         v-for="item in list"

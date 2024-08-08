@@ -36,20 +36,21 @@
         <div class="grid grid-cols-2 border-l-2 border-red-400 pl-5 px-4 pr-4 mt-2.5">
           <div>
             <div class="flex gap-2 items-center">
-              <img class=" w-5 h-5 rotate-[250px]" src="/icons/arrow.svg" alt="arrow">
+              <img :class="`w-5 h-5 rotate-[${item.wind.deg}deg]`"
+                   src="/icons/arrow.svg" alt="arrow">
               <p>{{item.wind.speed}}</p>
             </div>
-            <p>
-              {{ $t("humidity") }}: {{item.wind.gust}}
-            </p>
-            <p>{{$t("visibility")}}: {{item.wind.gust}}</p>
+            <div>
+              {{ $t("humidity") }}: {{item.main.humidity}}%
+            </div>
+
           </div>
           <div>
             <div class="flex items-center gap-x-1">
-              <img class=" w-4 h-4 rotate-[250px]" src="/icons/compas.svg" alt="arrow">
-             <div>1011hPa</div>
+              <img class="w-4 h-4 rotate-[250px]" src="/icons/compas.svg" alt="arrow">
+             <div>{{item.main.pressure}}hPa</div>
             </div>
-            <div>{{$t("dew_point")}}: 11°C</div>
+            <div>{{$t("visibility")}}: {{item.visibility /1000}}km</div>
           </div>
         </div>
       </div>

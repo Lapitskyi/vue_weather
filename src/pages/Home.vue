@@ -3,7 +3,7 @@
       class="w-full h-full flex flex-col m-auto">
     <section class="bg-summer_banner bg-cover bg-center">
       <div
-          class="grid grid-cols-2 items-center justify-between gap-3 lg:container mx-auto px-2.5 w-full h-[300px]">
+          class="grid grid-cols-1 md:grid-cols-2 items-center justify-between gap-3 lg:container mx-auto px-2.5 w-full h-[300px]">
         <div>
           <h1 class="text-orange-400 text-7xl font-bold">Weather</h1>
           <p class="text-md text-white max-w-[360px]">{{ $t('info') }}</p>
@@ -57,9 +57,9 @@
 
     <section class="bg-gray-100 w-full py-5">
       <div
-          class="flex items-center justify-between gap-5 lg:container mx-auto px-2.5">
+          class="flex items-start md:items-center justify-between gap-2 md:gap-5 lg:container mx-auto px-2.5">
 
-        <div class="flex items-center gap-2">
+        <div class="flex md:flex-nowrap flex-wrap items-center gap-2">
           <Tab
               @deleteCity="openModalDelete(item)"
               @changeCity="changeCity(item)"
@@ -70,29 +70,31 @@
           >
           </Tab>
         </div>
-        <div class="flex gap-x-3 items-center">
-          <div class="flex gap-5 bg-gray-200 w-max rounded p-1">
+        <div class="flex flex-wrap 991:flex-nowrap gap-3 items-center">
+          <div class="flex gap-0.5 991:gap-5 bg-gray-200 w-max rounded p-0 991:p-1 ml-auto">
             <button
                 @click="changeTemp(btn.id)"
                 v-for="btn in sysTemps"
                 :key="btn.id"
                 :class="`${activeTemp === btn.id
           ? 'bg-white'
-          : 'bg-transparent' } py-1 px-2  rounded w-max`">
-              {{ $t(`${btn.id}`) }}: {{ '&#176;' }}{{ btn.code }}, {{ btn.sys }}
+          : 'bg-transparent' } py-1 px-1.5 rounded w-max ml-auto`">
+              <span class="hidden 991:flex" >{{ $t(`${btn.id}`) }}: {{ '&#176;' }}{{ btn.code }}, {{ btn.sys }}</span>
+              <span class="flex 991:hidden">{{ '&#176;' }}{{ btn.code }}</span>
             </button>
           </div>
           <img
               @click="router.push('/favorites')"
-              class="w-9 h-9 cursor-pointer" src="/icons/favorite.svg" alt="">
+              class="w-9 h-9 cursor-pointer ml-auto" src="/icons/favorite.svg" alt="">
         </div>
       </div>
     </section>
 
+    <Loader v-if="isLoaderCurrentCity"/>
 
-    <section class="my-5">
-      <Loader v-if="isLoaderCurrentCity"/>
-      <div v-if="!isLoaderCurrentCity" class="grid grid-cols-2 lg:container mx-auto px-2.5">
+    <section v-if="!isLoaderCurrentCity" class="my-5">
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-10 lg:container mx-auto px-2.5">
         <div v-if="state.currentCity">
           <Card
               @cardAction="addFavoritesCity"
@@ -102,22 +104,16 @@
               :activeTemp="activeTemp"
           />
         </div>
-      </div>
-
-    </section>
-
-
-    <section class="my-5">
-      <div class="mt-5 grid grid-cols-2 gap-x-10 items-start  lg:container mx-auto px-2.5">
         <div>
-
-          <Chart :chartData="hourlyForecastDay"/>
-
+          MAP
         </div>
+<div class="mih-h-[300px]">
+  <Chart :chartData="hourlyForecastDay"/>
+</div>
 
         <div>
           <div class="text-center">{{ $t("days_forecast") }}</div>
-          <div class="flex justify-end">
+          <div class="flex  md:justify-end">
             <List
                 :activeTemp="activeTemp"
                 :list="sortDays"
@@ -125,7 +121,10 @@
           </div>
         </div>
       </div>
+
     </section>
+
+
 
     <Modal
         :showModal="showModal"
@@ -184,7 +183,7 @@ export default {
   setup() {
     const router = useRouter()
 
-    let isLoaderCurrentCity = ref(false)
+    let isLoaderCurrentCity = ref(true)
 
     let favoriteCities = useLocalStorage('favoriteCities', []);
     let citySearch = ref('');
@@ -414,7 +413,7 @@ export default {
                 const tempDay = {
                   x: getTime(arr[i].dt),
                   temp_max: max,
-                  temp_min: min - 1
+                  temp_min: min
                 }
                 result.tempDay.push(tempDay)
               }
@@ -423,7 +422,7 @@ export default {
                 const dayWeek = {
                   x: dayWeather(arr[i].dt),
                   temp_max: max,
-                  temp_min: min - 1
+                  temp_min: min
                 }
                 result.tempWeek.push(dayWeek)
               }

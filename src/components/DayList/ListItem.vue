@@ -4,7 +4,7 @@
         @click="activeDays"
         :class="`${showDetails
         ? 'bg-gray-100 rounded-t-lg'
-        : 'bg-white rounded-lg' } max-w-[400px] flex items-center justify-between gap-0.5 text-sm  hover:bg-gray-100 px-1 ` "
+        : 'bg-white rounded-lg' } w-full md:max-w-[400px] flex items-center justify-between gap-0.5 text-sm  hover:bg-gray-100 px-1 ` "
     >
       <div class="w-[80px]">
         {{ dayWeather(item.dt) }},
@@ -38,7 +38,7 @@
       >
     </div>
 
-    <div v-show="showDetails" :class="`${showDetails && 'border rounded-b-lg'} max-w-[400px]` ">
+    <div v-show="showDetails" :class="`${showDetails && 'border rounded-b-lg'} w-full md:max-w-[400px]` ">
       <ShortCard :item="item" :activeTemp="activeTemp"/>
     </div>
   </div>

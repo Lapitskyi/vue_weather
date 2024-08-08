@@ -1,7 +1,7 @@
 <template>
 
   <div>
-    <div class="flex items-center justify-between">
+    <div class="flex flex-col  sm:flex-row items-center justify-between">
       <h2>{{ $t("hourly_forecast") }}</h2>
 
       <div class="flex items-center gap-3 mt-2.5">

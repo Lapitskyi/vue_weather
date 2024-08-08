@@ -1,6 +1,8 @@
 <template>
-<div  class="bg-summer_banner bg-cover bg-center w-full h-screen">
-  <section class="flex gap-x-2.5  w-full pt-40 lg:container mx-auto px-2.5">
+<div  class="bg-summer_banner bg-cover bg-center w-full mi-h-screen md:h-full">
+
+  <Loader v-if="isLoaderCurrentCity"/>
+  <section v-if="!isLoaderCurrentCity" class=" grid gap-2.5 md:grid-cols-3 lg:grid-cols-5 w-full pt-40 pb-10 lg:container mx-auto px-2.5">
 
       <Card
           v-for="item in cities" :id="item.id"
@@ -21,11 +23,14 @@ import {onMounted, ref} from "vue";
 import useLocalStorage from "@/helpers/useLocalStorage.js";
 import {getWeatherCurrentCity} from "@/service/weather.js";
 import Card from "@/components/Cards/Card.vue";
+import Loader from "@/components/Loader/Loader.vue";
 
 export default {
   name: "Favorites",
-  components: { Card},
+  components: {Loader, Card},
   setup() {
+
+    const isLoaderCurrentCity=ref(true)
 
     let favoriteCities = useLocalStorage('favoriteCities', []);
     const cities = ref([]);
@@ -40,16 +45,20 @@ export default {
 
 
     onMounted(() => {
+
       if (favoriteCities.value?.length) {
+        isLoaderCurrentCity.value=true
         favoriteCities.value.forEach(async (item) => {
           const result = await getWeatherCurrentCity(item.name)
           cities.value.push(result)
         })
+        isLoaderCurrentCity.value=false
       }
     })
 
 
     return {
+      isLoaderCurrentCity,
       cities,
       activeTemp,
       deleteFavoriteCity
