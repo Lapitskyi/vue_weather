@@ -79,7 +79,9 @@
                 :class="`${activeTemp === btn.id
           ? 'bg-white'
           : 'bg-transparent' } py-1 px-1.5 rounded w-max ml-auto`">
-              <span class="hidden 991:flex" >{{ $t(`${btn.id}`) }}: {{ '&#176;' }}{{ btn.code }}, {{ btn.sys }}</span>
+              <span class="hidden 991:flex">{{ $t(`${btn.id}`) }}: {{ '&#176;' }}{{
+                  btn.code
+                }}, {{ btn.sys }}</span>
               <span class="flex 991:hidden">{{ '&#176;' }}{{ btn.code }}</span>
             </button>
           </div>
@@ -105,11 +107,13 @@
           />
         </div>
         <div>
-          MAP
+          <Maps
+              :positionCurrentCity="state.currentCity.coord"
+          />
         </div>
-<div class="mih-h-[300px]">
-  <Chart :chartData="hourlyForecastDay"/>
-</div>
+        <div class="mih-h-[300px]">
+          <Chart :chartData="hourlyForecastDay"/>
+        </div>
 
         <div>
           <div class="text-center">{{ $t("days_forecast") }}</div>
@@ -123,7 +127,6 @@
       </div>
 
     </section>
-
 
 
     <Modal
@@ -175,11 +178,12 @@ import Modal from "@/components/Modal/Modal.vue";
 import {useRouter} from "vue-router";
 import useLocalStorage from "@/helpers/useLocalStorage.js";
 import Loader from "@/components/Loader/Loader.vue";
+import Maps from "@/components/Maps.vue";
 
 export default {
   name: "Home",
   methods: {dateWeather, dayWeather, tempWeatherFar, tempWeatherCel},
-  components: {Loader, Modal, Tab, List, Chart, Card, CustomInput, CustomToggle},
+  components: {Maps, Loader, Modal, Tab, List, Chart, Card, CustomInput, CustomToggle},
   setup() {
     const router = useRouter()
 
