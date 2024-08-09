@@ -19,5 +19,7 @@
     "rain": "Rain",
     "light rain": "Light rain",
     "few clouds": "Few clouds",
-"broken clouds": "Broken clouds"
+"broken clouds": "Broken clouds",
+    "list_favorites": "The list of selected cities is empty"
+
 }

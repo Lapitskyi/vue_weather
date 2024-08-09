@@ -109,6 +109,7 @@
         <div>
           <Maps
               :positionCurrentCity="state.currentCity.coord"
+              :lon="32.2597"
           />
         </div>
         <div class="mih-h-[300px]">
@@ -380,6 +381,7 @@ export default {
           name: state.currentCity.name,
           ...state.currentCity.coord
         })
+        errorSearch.value = `The city is added to the favorites`
       }
     }
 
@@ -410,6 +412,7 @@ export default {
                 arr[i].main.temp_max) : tempWeatherFar(arr[i].main.temp_max)
             const min = activeTemp.value === 'metric' ? tempWeatherCel(
                 arr[i].main.temp_min) : tempWeatherFar(arr[i].main.temp_min)
+
             if (!weeks.includes(dayWeather(arr[i].dt) || getTime(arr[i].dt))) {
 
               if (dayWeather(arr[i].dt) === day) {
@@ -421,6 +424,7 @@ export default {
                 }
                 result.tempDay.push(tempDay)
               }
+
               if (dayWeather(arr[i].dt) !== day) {
                 weeks.push(dayWeather(arr[i].dt))
                 const dayWeek = {

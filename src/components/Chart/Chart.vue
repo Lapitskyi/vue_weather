@@ -4,7 +4,7 @@
     <div class="flex flex-col  sm:flex-row items-center justify-between">
       <h2>{{ $t("hourly_forecast") }}</h2>
 
-      <div class="flex items-center gap-3 mt-2.5">
+      <div v-if="!ready" class="flex items-center gap-3 mt-2.5">
         <button
             @click="changeActiveBtn(btn.id)"
             :class="`${activeBtn ===btn.id
@@ -36,7 +36,7 @@ import {onMounted, ref, toRef, watch} from "vue";
 export default {
   name: "Chart",
   props: {
-    chartData:{
+    chartData: {
       tempDay: [],
       tempWeek: []
     },
@@ -71,7 +71,10 @@ export default {
     })
     const triggerRefresh = toRef(props, 'chartData')
     let lineChart = ref(null)
-    const toggleChart = [{id: 'tempDay', name: 'Day'}, {id: 'tempWeek', name: 'Week'}];
+    let ready = ref(false)
+
+    const toggleChart = ref([{id: 'tempDay', name: 'Day'}, {id: 'tempWeek', name: 'Week'}]);
+
     const activeBtn = ref('tempDay');
     const loading = ref(false)
 
@@ -79,11 +82,12 @@ export default {
     const changeActiveBtn = (btn) => {
       if (btn && btn !== activeBtn.value) {
         activeBtn.value = btn
-        loading.value =true
+        loading.value = true
       }
     }
 
     const createChart = () => {
+      ready.value = true
       const ctx = document.getElementById("line-chart");
       lineChart = new Chart(ctx, chartData.value);
     }
@@ -111,11 +115,13 @@ export default {
             }
           }
         })
-        if (labels?.length  && result?.length ) {
+
+
+        if (labels?.length && result?.length) {
           chartData.value.data.labels = labels;
           chartData.value.data.datasets = result;
           lineChart.update();
-          loading.value =false
+          loading.value = false
         }
       }
     }
@@ -124,12 +130,22 @@ export default {
     watch(
         triggerRefresh,
         (prev, curr) => {
-          triggerRefresh.value && activeBtn.value && updateChart(activeBtn.value)
+
+          const k = Object.keys(triggerRefresh.value?.chartData)
+              .filter((item) => triggerRefresh.value?.chartData[item]?.length)
+
+          if (k?.length) {
+            toggleChart.value = toggleChart.value.filter((item) => k.includes(item.id))
+            activeBtn.value = k[0]
+            ready.value = false
+            triggerRefresh.value && activeBtn.value && updateChart(activeBtn.value)
+          }
+
         },
         {deep: true}
     )
 
-    watch(loading,(prev,curr)=>{
+    watch(loading, (prev, curr) => {
       updateChart(activeBtn.value)
     })
 
@@ -141,7 +157,8 @@ export default {
       toggleChart,
       activeBtn,
       changeActiveBtn,
-      updateChart
+      updateChart,
+      ready
 
     }
 
