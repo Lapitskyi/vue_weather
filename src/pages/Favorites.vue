@@ -1,6 +1,6 @@
 <template>
-  <div class="bg-summer_banner bg-cover bg-center w-full min-h-screen h-full flex ">
-
+  <div class="bg-summer_banner bg-cover bg-center w-full min-h-screen h-full flex flex-col ">
+      <h2 class="px-2.5 mt-20 text-4xl text-center">Featured Cities</h2>
     <Loader v-if="isLoaderCurrentCity"/>
 
     <div class="text-5xl m-auto flex justify-center items-center"
@@ -9,7 +9,7 @@
     </div>
 
     <section v-if="!isLoaderCurrentCity &&  cities?.length"
-             class=" grid gap-2.5 md:grid-cols-3 lg:grid-cols-5 w-full pt-40 pb-10 lg:container mx-auto px-2.5 h-max">
+             class=" grid gap-2.5 md:grid-cols-3 lg:grid-cols-5 w-full pt-10 pb-10 lg:container mx-auto px-2.5 h-max">
 
       <Card
           v-for="item in cities" :id="item.id"
@@ -31,10 +31,11 @@ import useLocalStorage from "@/helpers/useLocalStorage.js";
 import {getWeatherCurrentCity} from "@/service/weather.js";
 import Card from "@/components/Cards/Card.vue";
 import Loader from "@/components/Loader/Loader.vue";
+import MapsLoader from "@/components/Maps/MapsLoader.vue";
 
 export default {
   name: "Favorites",
-  components: {Loader, Card},
+  components: {MapsLoader, Loader, Card},
   setup() {
 
     const isLoaderCurrentCity = ref(true)

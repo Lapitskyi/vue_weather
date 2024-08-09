@@ -107,10 +107,11 @@
           />
         </div>
         <div>
-          <Maps
+
+          <MapsLoader
               :positionCurrentCity="state.currentCity.coord"
-              :lon="32.2597"
           />
+
         </div>
         <div class="mih-h-[300px]">
           <Chart :chartData="hourlyForecastDay"/>
@@ -179,12 +180,12 @@ import Modal from "@/components/Modal/Modal.vue";
 import {useRouter} from "vue-router";
 import useLocalStorage from "@/helpers/useLocalStorage.js";
 import Loader from "@/components/Loader/Loader.vue";
-import Maps from "@/components/Maps/Maps.vue";
+import MapsLoader from "@/components/Maps/MapsLoader.vue";
 
 export default {
   name: "Home",
   methods: {dateWeather, dayWeather, tempWeatherFar, tempWeatherCel},
-  components: {Maps, Loader, Modal, Tab, List, Chart, Card, CustomInput, CustomToggle},
+  components: {MapsLoader, Loader, Modal, Tab, List, Chart, Card, CustomInput, CustomToggle},
   setup() {
     const router = useRouter()
 
