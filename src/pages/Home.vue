@@ -179,7 +179,7 @@ import Modal from "@/components/Modal/Modal.vue";
 import {useRouter} from "vue-router";
 import useLocalStorage from "@/helpers/useLocalStorage.js";
 import Loader from "@/components/Loader/Loader.vue";
-import Maps from "@/components/Maps.vue";
+import Maps from "@/components/Maps/Maps.vue";
 
 export default {
   name: "Home",
